@@ -57,7 +57,7 @@ bool retornaGanhou(int &numeroCaixas, char m[10][15])
     {
         for (int j = 0; j < 15; j++)
         {
-            if (m[i][j] == 5)
+            if (m[i][j] == 4)
             {
                 caixasCorretas++;
             }
@@ -88,15 +88,15 @@ void imprimeTrocado(char m[10][15])
                 cor_texto(11, 0);
                 cout << char(219);
                 break; // parede
-            case 3:
+            case 2:
                 cor_texto(6, 0);
                 cout << char(176);
                 break; // caixa
-            case 4:
+            case 3:
                 cor_texto(10, 0);
                 cout << char(169);
                 break; // posicao final
-            case 5:
+            case 4:
                 cor_texto(4, 0);
                 cout << char(178);
                 break; // caixa na posicao final
@@ -125,7 +125,7 @@ void escolheMapa(int escolha, char m[10][15], int &x, int &y)
     // MicroBan IV -> 1 personagem x=1 y=4
     char m1[10][15] = {0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
                        1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-                       1, 0, 0, 3, 5, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+                       1, 0, 0, 2, 4, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0,
                        1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
                        1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
                        1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -138,9 +138,9 @@ void escolheMapa(int escolha, char m[10][15], int &x, int &y)
     char m2[10][15] = {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
                        1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
                        1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0,
-                       1, 0, 1, 3, 1, 0, 1, 1, 1, 0, 4, 0, 0, 1, 0,
-                       1, 0, 3, 0, 3, 0, 0, 0, 0, 4, 0, 4, 0, 1, 0,
-                       1, 0, 1, 3, 1, 0, 1, 1, 1, 0, 4, 0, 0, 1, 0,
+                       1, 0, 1, 2, 1, 0, 1, 1, 1, 0, 3, 0, 0, 1, 0,
+                       1, 0, 2, 0, 2, 0, 0, 0, 0, 3, 0, 3, 0, 1, 0,
+                       1, 0, 1, 2, 1, 0, 1, 1, 1, 0, 3, 0, 0, 1, 0,
                        1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0,
                        1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
                        1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -148,11 +148,11 @@ void escolheMapa(int escolha, char m[10][15], int &x, int &y)
 
     // TBox -> 2 personagem x=5 y=2
     char m3[10][15] = {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-                       1, 0, 0, 3, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+                       1, 0, 0, 2, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
                        1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-                       1, 0, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-                       1, 0, 1, 0, 1, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-                       1, 0, 0, 5, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+                       1, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+                       1, 0, 1, 0, 1, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+                       1, 0, 0, 4, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
                        1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -270,15 +270,15 @@ void imprimeMapaPersonagem(char m[10][15], int x, int y)
                     cor_texto(11, 0);
                     cout << char(219); // parede
                     break;
-                case 3:
+                case 2:
                     cor_texto(6, 0);
                     cout << char(176); // caixa
                     break;
-                case 4:
+                case 3:
                     cor_texto(10, 0);
                     cout << char(169); // posicao final
                     break;
-                case 5:
+                case 4:
                     cor_texto(4, 0);
                     cout << char(178); // caixa na posicao final
                     break;
@@ -327,21 +327,21 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair)
             y += modificadorY;
         break;
 
-    case 3:
+    case 2:
         switch (m[x + modificadorX * 2][y + modificadorY * 2]) // acima da caixa
         {
         case 0:
             m[x + modificadorX][y + modificadorY] = 0;
-            m[x + modificadorX * 2][y + modificadorY * 2] = 3;
+            m[x + modificadorX * 2][y + modificadorY * 2] = 2;
             if (modificadorX != 0)
                 x += modificadorX;
             if (modificadorY != 0)
                 y += modificadorY;
             break;
 
-        case 4:
+        case 3:
             m[x + modificadorX][y + modificadorY] = 0;
-            m[x + modificadorX * 2][y + modificadorY * 2] = 5;
+            m[x + modificadorX * 2][y + modificadorY * 2] = 4;
             if (modificadorX != 0)
             x += modificadorX;
             if (modificadorY != 0)
@@ -350,28 +350,28 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair)
         }
         break;
 
-    case 4:
+    case 3:
         if (modificadorX != 0)
             x += modificadorX;
         if (modificadorY != 0)
             y += modificadorY;
         break;
 
-    case 5:
+    case 4:
         switch (m[x + modificadorX * 2][y + modificadorY * 2])
         {
         case 0:
-            m[x + modificadorX][y + modificadorY] = 4;
-            m[x + modificadorX * 2][y + modificadorY * 2] = 3;
+            m[x + modificadorX][y + modificadorY] = 3;
+            m[x + modificadorX * 2][y + modificadorY * 2] = 2;
             if (modificadorX != 0)
                 x += modificadorX;
             if (modificadorY != 0)
                 y += modificadorY;
             break;
 
-        case 4:
-            m[x + modificadorX][y + modificadorY] = 4;
-            m[x + modificadorX * 2][y + modificadorY * 2] = 5;
+        case 3:
+            m[x + modificadorX][y + modificadorY] = 3;
+            m[x + modificadorX * 2][y + modificadorY * 2] = 4;
             if (modificadorX != 0)
                 x += modificadorX;
             if (modificadorY != 0)
