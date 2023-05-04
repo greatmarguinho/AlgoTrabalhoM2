@@ -315,15 +315,6 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair)
         modificadorX = 0;
         modificadorY = 0;
         sair = true;
-    case 'p':
-        if(m[x - 1][y] == 3){
-            modificadorX = 0;
-            modificadorY = 0;
-            m[x - 1][y] = 5;
-        }else{
-            modificadorX = 0;
-            modificadorY = 0;
-        }
         break;
     }
 
