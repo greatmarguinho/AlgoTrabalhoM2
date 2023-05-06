@@ -246,6 +246,10 @@ void menuEscolheMapa(int &x, int &y, char m[10][15], int &numeroCaixas)
     }
 }
 
+void imprimeNumeroMovimentos(int &passos){
+    cout << "numero de movimentos " << passos << endl;
+}
+
 void imprimeMapaPersonagem(char m[10][15], int x, int y)
 {
     /// Imprime o jogo: mapa e personagem.
@@ -290,7 +294,9 @@ void imprimeMapaPersonagem(char m[10][15], int x, int y)
     } // fim for mapa
 }
 
-void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair)
+
+
+void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &passos)
 {
     int modificadorX, modificadorY;
     switch (tecla)
@@ -323,8 +329,10 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair)
     case 0:
         if (modificadorX != 0)
             x += modificadorX;
+            passos++;
         if (modificadorY != 0)
             y += modificadorY;
+            passos++;
         break;
 
     case 2:
@@ -335,17 +343,21 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair)
             m[x + modificadorX * 2][y + modificadorY * 2] = 2;
             if (modificadorX != 0)
                 x += modificadorX;
+                passos++;
             if (modificadorY != 0)
                 y += modificadorY;
+                passos++;
             break;
 
         case 3:
             m[x + modificadorX][y + modificadorY] = 0;
             m[x + modificadorX * 2][y + modificadorY * 2] = 4;
             if (modificadorX != 0)
-            x += modificadorX;
+                x += modificadorX;
+                passos++;
             if (modificadorY != 0)
                 y += modificadorY;
+                passos++;
             break;
         }
         break;
@@ -353,8 +365,10 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair)
     case 3:
         if (modificadorX != 0)
             x += modificadorX;
+            passos++;
         if (modificadorY != 0)
             y += modificadorY;
+            passos++;
         break;
 
     case 4:
@@ -365,8 +379,10 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair)
             m[x + modificadorX * 2][y + modificadorY * 2] = 2;
             if (modificadorX != 0)
                 x += modificadorX;
+                passos++;
             if (modificadorY != 0)
                 y += modificadorY;
+                passos++;
             break;
 
         case 3:
@@ -374,20 +390,22 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair)
             m[x + modificadorX * 2][y + modificadorY * 2] = 4;
             if (modificadorX != 0)
                 x += modificadorX;
+                passos++;
             if (modificadorY != 0)
                 y += modificadorY;
+                passos++;
             break;
         }
         break;
     }
 }
 
-void executaMovimentos(char tecla, char m[10][15], int &x, int &y, bool &sair)
+void executaMovimentos(char tecla, char m[10][15], int &x, int &y, bool &sair, int &passos)
 {
     if (_kbhit())
     {
         tecla = getch();
-        movimento(tecla, m, x, y, sair);
+        movimento(tecla, m, x, y, sair, passos);
     } // fim do if
 }
 
@@ -400,6 +418,7 @@ void functionMenu()
     int y = 4;
 
     char tecla;
+    int passos = 0;
 
     do
     {
@@ -437,13 +456,15 @@ void functionMenu()
                 reposicionaCursor();
 				cout << "para sair presione [L]" << endl;
                 imprimeMapaPersonagem(m, x, y);
-                executaMovimentos(tecla, m, x, y, sair);
+                imprimeNumeroMovimentos(passos);
+                executaMovimentos(tecla, m, x, y, sair, passos);
 				ganhou = retornaGanhou(numeroCaixas, m);
                 if(ganhou == true){
 					system("cls");
 					imprimeMapaPersonagem(m, x, y);
+                    imprimeNumeroMovimentos(passos);
                     cout << "Parabens, voce ganhou o joguinho... " << endl;
-                    cout << "Pressione qualquer tecla pra voltar ao menu";
+                    cout << "Pressione qualquer tecla pra voltar ao menu" << endl;
                     system ("pause");
                 }
             }
@@ -456,7 +477,7 @@ void functionMenu()
                     "Esse jogo foi desenvolvido pelos alunos do curso de Ciencias da computacao\n"
                     "da universidade do vale do Itajai(UNIVALI), para materia de algoritmos e programacao 2\n"
                     "lecianada pelo professor Thiago Felski.\n"
-                    "Alunos: Grisa, Turman, Akerman\n"
+                    "Alunos: Vinicius Grisa, Gabriel Turman, Marco Antonio Martins Akerman\n"
                     "Data: Março 2022"
                  << endl;
             system("pause");
