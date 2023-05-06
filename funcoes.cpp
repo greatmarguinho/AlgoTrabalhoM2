@@ -257,8 +257,8 @@ void menuEscolheMapa(int &x, int &y, char m[10][15], int &numeroCaixas)
     }
 }
 
-void imprimeNumeroMovimentos(int &passos){
-    cout << "numero de movimentos " << passos << endl;
+void imprimeNumeroMovimentos(int &movimentos){
+    cout << "numero de movimentos " << movimentos << endl;
 }
 
 void imprimeMapaPersonagem(char m[10][15], int x, int y)
@@ -307,7 +307,7 @@ void imprimeMapaPersonagem(char m[10][15], int x, int y)
 
 
 
-void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &passos)
+void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movimentos)
 {
     int modificadorX, modificadorY;
     switch (tecla)
@@ -336,87 +336,100 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &pass
     }
 
     switch (m[x + modificadorX][y + modificadorY])
+{
+case 0:
+    if (modificadorX != 0) {
+        x += modificadorX;
+        movimentos++;
+    }
+    if (modificadorY != 0) {
+        y += modificadorY;
+        movimentos++;
+    }
+    break;
+
+case 2:
+    switch (m[x + modificadorX * 2][y + modificadorY * 2]) // acima da caixa
     {
     case 0:
-        if (modificadorX != 0)
+        m[x + modificadorX][y + modificadorY] = 0;
+        m[x + modificadorX * 2][y + modificadorY * 2] = 2;
+        if (modificadorX != 0) {
             x += modificadorX;
-            passos++;
-        if (modificadorY != 0)
+            movimentos++;
+        }
+        if (modificadorY != 0) {
             y += modificadorY;
-            passos++;
-        break;
-
-    case 2:
-        switch (m[x + modificadorX * 2][y + modificadorY * 2]) // acima da caixa
-        {
-        case 0:
-            m[x + modificadorX][y + modificadorY] = 0;
-            m[x + modificadorX * 2][y + modificadorY * 2] = 2;
-            if (modificadorX != 0)
-                x += modificadorX;
-                passos++;
-            if (modificadorY != 0)
-                y += modificadorY;
-                passos++;
-            break;
-
-        case 3:
-            m[x + modificadorX][y + modificadorY] = 0;
-            m[x + modificadorX * 2][y + modificadorY * 2] = 4;
-            if (modificadorX != 0)
-                x += modificadorX;
-                passos++;
-            if (modificadorY != 0)
-                y += modificadorY;
-                passos++;
-            break;
+            movimentos++;
         }
         break;
 
     case 3:
-        if (modificadorX != 0)
+        m[x + modificadorX][y + modificadorY] = 0;
+        m[x + modificadorX * 2][y + modificadorY * 2] = 4;
+        if (modificadorX != 0) {
             x += modificadorX;
-            passos++;
-        if (modificadorY != 0)
+            movimentos++;
+        }
+        if (modificadorY != 0) {
             y += modificadorY;
-            passos++;
-        break;
-
-    case 4:
-        switch (m[x + modificadorX * 2][y + modificadorY * 2])
-        {
-        case 0:
-            m[x + modificadorX][y + modificadorY] = 3;
-            m[x + modificadorX * 2][y + modificadorY * 2] = 2;
-            if (modificadorX != 0)
-                x += modificadorX;
-                passos++;
-            if (modificadorY != 0)
-                y += modificadorY;
-                passos++;
-            break;
-
-        case 3:
-            m[x + modificadorX][y + modificadorY] = 3;
-            m[x + modificadorX * 2][y + modificadorY * 2] = 4;
-            if (modificadorX != 0)
-                x += modificadorX;
-                passos++;
-            if (modificadorY != 0)
-                y += modificadorY;
-                passos++;
-            break;
+            movimentos++;
         }
         break;
     }
+    break;
+
+case 3:
+    if (modificadorX != 0) {
+        x += modificadorX;
+        movimentos++;
+    }
+    if (modificadorY != 0) {
+        y += modificadorY;
+        movimentos++;
+    }
+    break;
+
+case 4:
+    switch (m[x + modificadorX * 2][y + modificadorY * 2])
+    {
+    case 0:
+        m[x + modificadorX][y + modificadorY] = 3;
+        m[x + modificadorX * 2][y + modificadorY * 2] = 2;
+        if (modificadorX != 0) {
+            x += modificadorX;
+            movimentos++;
+        }
+        if (modificadorY != 0) {
+            y += modificadorY;
+            movimentos++;
+        }
+        break;
+
+    case 3:
+        m[x + modificadorX][y + modificadorY] = 3;
+        m[x + modificadorX * 2][y + modificadorY * 2] = 4;
+        if (modificadorX != 0) {
+            x += modificadorX;
+            movimentos++;
+        }
+        if (modificadorY != 0) {
+            y += modificadorY;
+            movimentos++;
+        }
+        break;
+    }
+    break;
 }
 
-void executaMovimentos(char tecla, char m[10][15], int &x, int &y, bool &sair, int &passos)
+}
+
+void executaMovimentos(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movimentos)
 {
     if (_kbhit())
     {
         tecla = getch();
-        movimento(tecla, m, x, y, sair, passos);
+        movimento(tecla, m, x, y, sair, movimentos);
     } // fim do if
 }
 
@@ -429,9 +442,9 @@ void functionMenu()
     int y = 4;
 
     char tecla;
-    int passos = 0;
 
     Jogador player;
+    player.movimentos = 0;
 
     do
     {
@@ -471,13 +484,13 @@ void functionMenu()
                 reposicionaCursor();
 				cout << "para sair presione [L]" << endl;
                 imprimeMapaPersonagem(m, x, y);
-                imprimeNumeroMovimentos(passos);
-                executaMovimentos(tecla, m, x, y, sair, passos);
+                imprimeNumeroMovimentos(player.movimentos);
+                executaMovimentos(tecla, m, x, y, sair, player.movimentos);
 				ganhou = retornaGanhou(numeroCaixas, m);
                 if(ganhou == true){
 					system("cls");
 					imprimeMapaPersonagem(m, x, y);
-                    imprimeNumeroMovimentos(passos);
+                    imprimeNumeroMovimentos(player.movimentos);
                     cout << "Parabens, " << player.nome << " voce ganhou o joguinho... " << endl;
                     cout << "Pressione qualquer tecla pra voltar ao menu" << endl;
                     system ("pause");
