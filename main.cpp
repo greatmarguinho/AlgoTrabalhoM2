@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <conio.h>
 #include "funcoes.cpp"
+#include <fstream>
 
 using namespace std;
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
+#include <fstream>
 
 using namespace std;
 
@@ -20,6 +21,16 @@ using namespace std;
 #define LIGHTPURPLE 13
 #define LIGHTYELLOW 14
 #define BRIGHTWHITE 15
+
+struct Jogador{
+    string nome;
+    int movimentos;
+
+    void escolheNome(){
+        cout << "Escolha seu nome" << endl;
+        cin >> nome;
+    }
+};
 
 void cor_texto(int fonte, int fundo = 0)
 {
@@ -420,6 +431,8 @@ void functionMenu()
     char tecla;
     int passos = 0;
 
+    Jogador player;
+
     do
     {
         system("cls");
@@ -445,6 +458,8 @@ void functionMenu()
             sair = false;
 			ganhou = false;
 
+            player.escolheNome(); // chamada de metodo struct
+
             naoPisca();
             if(jogar == 1) menuEscolheMapa(x, y, m, numeroCaixas);
             system("cls");
@@ -463,7 +478,7 @@ void functionMenu()
 					system("cls");
 					imprimeMapaPersonagem(m, x, y);
                     imprimeNumeroMovimentos(passos);
-                    cout << "Parabens, voce ganhou o joguinho... " << endl;
+                    cout << "Parabens, " << player.nome << " voce ganhou o joguinho... " << endl;
                     cout << "Pressione qualquer tecla pra voltar ao menu" << endl;
                     system ("pause");
                 }
