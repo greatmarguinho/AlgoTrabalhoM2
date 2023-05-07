@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <fstream>
 
+
 using namespace std;
 
 #define BLACK 0
@@ -22,13 +23,75 @@ using namespace std;
 #define LIGHTYELLOW 14
 #define BRIGHTWHITE 15
 
-struct Jogador{
+struct Jogador
+{
     string nome;
     int movimentos;
 
-    void escolheNome(){
+    void escolheNome()
+    {
         cout << "Escolha seu nome" << endl;
         cin >> nome;
+    }
+};
+
+struct Ranking
+{
+    string nomeRanking[3];
+    int movimentosRanking[3];
+    Jogador jogador;
+    
+    void leioRanking() // https://www.youtube.com/watch?v=EjJY7yA5SWw
+    {
+        int i = 0;
+        string linha;
+        ifstream arquivo;
+        arquivo.open("ranking.txt");
+        if (arquivo.is_open())
+        {
+            while (i < 3 && arquivo >> nomeRanking[i] >> movimentosRanking[i])  //https://stackoverflow.com/questions/5431941/why-is-while-feoffile-always-wrong
+            {
+                i++;
+            }
+            arquivo.close();
+        }
+        else
+        {
+            cout << "O arquivo não pode ser aberto";
+        }    
+    }
+
+    void conferePosicoes(string nome, int movimento){
+
+        jogador.nome = nome;
+        jogador.movimentos = movimento;
+        for(int i = 0; i < 3; i++){
+            if (movimentosRanking[i] < jogador.movimentos){
+                nomeRanking[i] = jogador.nome;
+                movimentosRanking[i] = jogador.movimentos;
+            }
+        }
+    }
+
+    void escreveRanking(string nome, int movimento)
+    {
+        int i = 0;
+        leioRanking();
+        conferePosicoes(nome, movimento);
+        ofstream arquivo;
+        arquivo.open("ranking.txt");
+        if (arquivo.is_open())
+        {
+            while(i < 3){
+                arquivo << nomeRanking[i] << " " << movimentosRanking[i] << endl;
+                i++;
+            }
+            arquivo.close();
+        }
+        else
+        {
+            cout << "O arquivo não pode ser aberto";
+        }
     }
 };
 
@@ -228,13 +291,16 @@ void menuEscolheMapa(int &x, int &y, char m[10][15], int &numeroCaixas)
         switch (i)
         {
         case 1:
-            cout << "[1] - MicroBanIv : 1\n" << endl;
+            cout << "[1] - MicroBanIv : 1\n"
+                 << endl;
             break;
         case 2:
-            cout << "[2] - Aruba 5 : 1\n" << endl;
+            cout << "[2] - Aruba 5 : 1\n"
+                 << endl;
             break;
         case 3:
-            cout << "[3] - TBox 2 : 1\n" << endl;
+            cout << "[3] - TBox 2 : 1\n"
+                 << endl;
             break;
         }
         escolheMapa(i, mapa, x, y);
@@ -245,19 +311,27 @@ void menuEscolheMapa(int &x, int &y, char m[10][15], int &numeroCaixas)
     cin >> escolha;
     escolheMapa(escolha, m, x, y);
 
-	if (escolha == 1) {
+    if (escolha == 1)
+    {
         numeroCaixas = 2;
-    } else if (escolha == 2) {
+    }
+    else if (escolha == 2)
+    {
         numeroCaixas = 4;
-    } else if (escolha == 3) {
+    }
+    else if (escolha == 3)
+    {
         numeroCaixas = 3;
-    } else {// caso o usuário escolha um valor inválido, define o mapa 1 e 2 caixas
+    }
+    else
+    { // caso o usuário escolha um valor inválido, define o mapa 1 e 2 caixas
         numeroCaixas = 2;
         escolheMapa(1, mapa, x, y);
     }
 }
 
-void imprimeNumeroMovimentos(int &movimentos){
+void imprimeNumeroMovimentos(int &movimentos)
+{
     cout << "numero de movimentos " << movimentos << endl;
 }
 
@@ -305,30 +379,32 @@ void imprimeMapaPersonagem(char m[10][15], int x, int y)
     } // fim for mapa
 }
 
-
-
 void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movimentos)
 {
     int modificadorX, modificadorY;
     switch (tecla)
     {
-    case 72: case 'w': /// cima
+    case 72:
+    case 'w': /// cima
         modificadorX = -1;
         modificadorY = 0;
         break;
-    case 80: case 's': /// baixo
+    case 80:
+    case 's': /// baixo
         modificadorX = 1;
         modificadorY = 0;
         break;
-    case 75: case 'a': /// esquerda
+    case 75:
+    case 'a': /// esquerda
         modificadorX = 0;
         modificadorY = -1;
         break;
-    case 77: case 'd': /// direita
+    case 77:
+    case 'd': /// direita
         modificadorX = 0;
         modificadorY = 1;
         break;
-    case 'l': ///sair
+    case 'l': /// sair
         modificadorX = 0;
         modificadorY = 0;
         sair = true;
@@ -336,92 +412,103 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movi
     }
 
     switch (m[x + modificadorX][y + modificadorY])
-{
-case 0:
-    if (modificadorX != 0) {
-        x += modificadorX;
-        movimentos++;
-    }
-    if (modificadorY != 0) {
-        y += modificadorY;
-        movimentos++;
-    }
-    break;
-
-case 2:
-    switch (m[x + modificadorX * 2][y + modificadorY * 2]) // acima da caixa
     {
     case 0:
-        m[x + modificadorX][y + modificadorY] = 0;
-        m[x + modificadorX * 2][y + modificadorY * 2] = 2;
-        if (modificadorX != 0) {
+        if (modificadorX != 0)
+        {
             x += modificadorX;
             movimentos++;
         }
-        if (modificadorY != 0) {
+        if (modificadorY != 0)
+        {
             y += modificadorY;
             movimentos++;
+        }
+        break;
+
+    case 2:
+        switch (m[x + modificadorX * 2][y + modificadorY * 2]) // acima da caixa
+        {
+        case 0:
+            m[x + modificadorX][y + modificadorY] = 0;
+            m[x + modificadorX * 2][y + modificadorY * 2] = 2;
+            if (modificadorX != 0)
+            {
+                x += modificadorX;
+                movimentos++;
+            }
+            if (modificadorY != 0)
+            {
+                y += modificadorY;
+                movimentos++;
+            }
+            break;
+
+        case 3:
+            m[x + modificadorX][y + modificadorY] = 0;
+            m[x + modificadorX * 2][y + modificadorY * 2] = 4;
+            if (modificadorX != 0)
+            {
+                x += modificadorX;
+                movimentos++;
+            }
+            if (modificadorY != 0)
+            {
+                y += modificadorY;
+                movimentos++;
+            }
+            break;
         }
         break;
 
     case 3:
-        m[x + modificadorX][y + modificadorY] = 0;
-        m[x + modificadorX * 2][y + modificadorY * 2] = 4;
-        if (modificadorX != 0) {
+        if (modificadorX != 0)
+        {
             x += modificadorX;
             movimentos++;
         }
-        if (modificadorY != 0) {
-            y += modificadorY;
-            movimentos++;
-        }
-        break;
-    }
-    break;
-
-case 3:
-    if (modificadorX != 0) {
-        x += modificadorX;
-        movimentos++;
-    }
-    if (modificadorY != 0) {
-        y += modificadorY;
-        movimentos++;
-    }
-    break;
-
-case 4:
-    switch (m[x + modificadorX * 2][y + modificadorY * 2])
-    {
-    case 0:
-        m[x + modificadorX][y + modificadorY] = 3;
-        m[x + modificadorX * 2][y + modificadorY * 2] = 2;
-        if (modificadorX != 0) {
-            x += modificadorX;
-            movimentos++;
-        }
-        if (modificadorY != 0) {
+        if (modificadorY != 0)
+        {
             y += modificadorY;
             movimentos++;
         }
         break;
 
-    case 3:
-        m[x + modificadorX][y + modificadorY] = 3;
-        m[x + modificadorX * 2][y + modificadorY * 2] = 4;
-        if (modificadorX != 0) {
-            x += modificadorX;
-            movimentos++;
-        }
-        if (modificadorY != 0) {
-            y += modificadorY;
-            movimentos++;
+    case 4:
+        switch (m[x + modificadorX * 2][y + modificadorY * 2])
+        {
+        case 0:
+            m[x + modificadorX][y + modificadorY] = 3;
+            m[x + modificadorX * 2][y + modificadorY * 2] = 2;
+            if (modificadorX != 0)
+            {
+                x += modificadorX;
+                movimentos++;
+            }
+            if (modificadorY != 0)
+            {
+                y += modificadorY;
+                movimentos++;
+            }
+            break;
+
+        case 3:
+            m[x + modificadorX][y + modificadorY] = 3;
+            m[x + modificadorX * 2][y + modificadorY * 2] = 4;
+            if (modificadorX != 0)
+            {
+                x += modificadorX;
+                movimentos++;
+            }
+            if (modificadorY != 0)
+            {
+                y += modificadorY;
+                movimentos++;
+            }
+            break;
         }
         break;
     }
-    break;
-}
-
 }
 
 void executaMovimentos(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movimentos)
@@ -444,6 +531,8 @@ void functionMenu()
     char tecla;
 
     Jogador player;
+    Ranking p;
+
     player.movimentos = 0;
 
     do
@@ -469,31 +558,37 @@ void functionMenu()
                 cin >> jogar;
             }
             sair = false;
-			ganhou = false;
+            ganhou = false;
 
             player.escolheNome(); // chamada de metodo struct
+            
 
             naoPisca();
-            if(jogar == 1) menuEscolheMapa(x, y, m, numeroCaixas);
+            if (jogar == 1)
+                menuEscolheMapa(x, y, m, numeroCaixas);
             system("cls");
-            //imprimeMapa(m);
+            // imprimeMapa(m);
 
             while (!sair && !ganhou)
             {
                 /// Posiciona a escrita no início do console
                 reposicionaCursor();
-				cout << "para sair presione [L]" << endl;
+                cout << "para sair presione [L]" << endl;
                 imprimeMapaPersonagem(m, x, y);
                 imprimeNumeroMovimentos(player.movimentos);
                 executaMovimentos(tecla, m, x, y, sair, player.movimentos);
-				ganhou = retornaGanhou(numeroCaixas, m);
-                if(ganhou == true){
-					system("cls");
-					imprimeMapaPersonagem(m, x, y);
+                ganhou = retornaGanhou(numeroCaixas, m);
+                if (ganhou == true)
+                {
+                    p.jogador.nome = player.nome;
+                    p.jogador.movimentos = player.movimentos;
+                    p.escreveRanking(player.nome, player.movimentos);
+                    system("cls");
+                    imprimeMapaPersonagem(m, x, y);
                     imprimeNumeroMovimentos(player.movimentos);
                     cout << "Parabens, " << player.nome << " voce ganhou o joguinho... " << endl;
                     cout << "Pressione qualquer tecla pra voltar ao menu" << endl;
-                    system ("pause");
+                    system("pause");
                 }
             }
             break;
@@ -504,7 +599,7 @@ void functionMenu()
                     "alocar as caixas no local certo usando estrategia e logica.\n\n"
                     "Esse jogo foi desenvolvido pelos alunos do curso de Ciencias da computacao\n"
                     "da universidade do vale do Itajai(UNIVALI), para materia de algoritmos e programacao 2\n"
-                    "lecianada pelo professor Thiago Felski.\n"
+                    "lecionada pelo professor Thiago Felski.\n"
                     "Alunos: Vinicius Grisa, Gabriel Turman, Marco Antonio Martins Akerman\n"
                     "Data: Março 2022"
                  << endl;
@@ -515,6 +610,7 @@ void functionMenu()
             system("cls");
             cout << "Obrigado por jogar Sokoban Mater Ultra 3000" << endl;
         }
-        if(escolhaMenu == 3) break;
+        if (escolhaMenu == 3)
+            break;
     } while (true);
 }
