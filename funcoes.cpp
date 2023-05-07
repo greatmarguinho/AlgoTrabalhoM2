@@ -3,7 +3,6 @@
 #include <conio.h>
 #include <fstream>
 
-
 using namespace std;
 
 #define BLACK 0
@@ -32,66 +31,6 @@ struct Jogador
     {
         cout << "Escolha seu nome" << endl;
         cin >> nome;
-    }
-};
-
-struct Ranking
-{
-    string nomeRanking[3];
-    int movimentosRanking[3];
-    Jogador jogador;
-    
-    void leioRanking() // https://www.youtube.com/watch?v=EjJY7yA5SWw
-    {
-        int i = 0;
-        string linha;
-        ifstream arquivo;
-        arquivo.open("ranking.txt");
-        if (arquivo.is_open())
-        {
-            while (i < 3 && arquivo >> nomeRanking[i] >> movimentosRanking[i])  //https://stackoverflow.com/questions/5431941/why-is-while-feoffile-always-wrong
-            {
-                i++;
-            }
-            arquivo.close();
-        }
-        else
-        {
-            cout << "O arquivo não pode ser aberto";
-        }    
-    }
-
-    void conferePosicoes(string nome, int movimento){
-
-        jogador.nome = nome;
-        jogador.movimentos = movimento;
-        for(int i = 0; i < 3; i++){
-            if (movimentosRanking[i] < jogador.movimentos){
-                nomeRanking[i] = jogador.nome;
-                movimentosRanking[i] = jogador.movimentos;
-            }
-        }
-    }
-
-    void escreveRanking(string nome, int movimento)
-    {
-        int i = 0;
-        leioRanking();
-        conferePosicoes(nome, movimento);
-        ofstream arquivo;
-        arquivo.open("ranking.txt");
-        if (arquivo.is_open())
-        {
-            while(i < 3){
-                arquivo << nomeRanking[i] << " " << movimentosRanking[i] << endl;
-                i++;
-            }
-            arquivo.close();
-        }
-        else
-        {
-            cout << "O arquivo não pode ser aberto";
-        }
     }
 };
 
@@ -181,18 +120,6 @@ void imprimeTrocado(char m[10][15])
         cout << "\n";
     }
 }
-
-/*void imprimeMapa(char m[10][15])
-{
-    for (int i = 0; i < 10; i++)
-    {
-        for (int j = 0; j < 15; j++)
-        {
-            cout << m[i][j];
-        }
-        cout << endl;
-    }
-}*/
 
 void escolheMapa(int escolha, char m[10][15], int &x, int &y)
 {
@@ -522,6 +449,7 @@ void executaMovimentos(char tecla, char m[10][15], int &x, int &y, bool &sair, i
 
 void functionMenu()
 {
+    Jogador player;
     int escolhaMenu = 0, escolhaMapa = 1, numeroCaixas = 0, jogar = 1;
     bool menu = false, ganhou = false, sair = false;
     char m[10][15];
@@ -529,11 +457,6 @@ void functionMenu()
     int y = 4;
 
     char tecla;
-
-    Jogador player;
-    Ranking p;
-
-    player.movimentos = 0;
 
     do
     {
@@ -557,17 +480,28 @@ void functionMenu()
                 cout << "Digite sua escolha: ";
                 cin >> jogar;
             }
-            sair = false;
-            ganhou = false;
 
-            player.escolheNome(); // chamada de metodo struct
             
 
-            naoPisca();
             if (jogar == 1)
+            {
+                naoPisca();
+                sair = false;
+                ganhou = false;
+                player.escolheNome(); // chamada de metodo struct
+                player.movimentos = 0;
                 menuEscolheMapa(x, y, m, numeroCaixas);
-            system("cls");
-            // imprimeMapa(m);
+                system("cls");
+            }
+            else
+            {   
+                naoPisca();
+                system("cls");
+                sair = false;
+                ganhou = false;
+                jogar = 1;
+            }
+            
 
             while (!sair && !ganhou)
             {
@@ -580,9 +514,7 @@ void functionMenu()
                 ganhou = retornaGanhou(numeroCaixas, m);
                 if (ganhou == true)
                 {
-                    p.jogador.nome = player.nome;
-                    p.jogador.movimentos = player.movimentos;
-                    p.escreveRanking(player.nome, player.movimentos);
+                    
                     system("cls");
                     imprimeMapaPersonagem(m, x, y);
                     imprimeNumeroMovimentos(player.movimentos);
@@ -601,7 +533,7 @@ void functionMenu()
                     "da universidade do vale do Itajai(UNIVALI), para materia de algoritmos e programacao 2\n"
                     "lecionada pelo professor Thiago Felski.\n"
                     "Alunos: Vinicius Grisa, Gabriel Turman, Marco Antonio Martins Akerman\n"
-                    "Data: Março 2022"
+                    "Data: Marco 2022"
                  << endl;
             system("pause");
             system("cls");
