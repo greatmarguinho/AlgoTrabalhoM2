@@ -34,6 +34,69 @@ struct Jogador
     }
 };
 
+void conferePosicoesRanking(string nome, int movimentos, string nomeRanking[3], int movimentosRanking[3]){
+
+        for(int i = 0; i < 3; i++){
+            if (movimentosRanking[i] > movimentos){
+                if(i == 0 || i == 1){
+                    nomeRanking[i+1] = nomeRanking[i];
+                    movimentosRanking[i+1] = movimentosRanking[i];
+                    nomeRanking[i] = nome;
+                    movimentosRanking[i] = movimentos;
+                }else{
+                    nomeRanking[i] = nome;
+                    movimentosRanking[i] = movimentos;
+                }
+                break;
+            }
+            cout << "conferindo" << endl;
+        }
+    }
+
+void leRanking(string nomeRanking[3], int movimentosRanking[3]) // https://www.youtube.com/watch?v=EjJY7yA5SWw
+    {
+        int i = 0;
+        string linha;
+        ifstream arquivo;
+        arquivo.open("ranking.txt");
+        if (arquivo.is_open())
+        {
+            while (i < 3 && arquivo >> nomeRanking[i] >> movimentosRanking[i])  //https://stackoverflow.com/questions/5431941/why-is-while-feoffile-always-wrong
+            {
+                i++;
+            }
+            arquivo.close();
+        }
+        else
+        {
+            cout << "O arquivo não pode ser aberto";
+        }    
+    }
+
+void escreveRanking(string nome, int movimentos)
+    {
+        string nomeRanking[3];
+        int movimentosRanking[3];
+        int i = 0;
+        leRanking(nomeRanking , movimentosRanking);
+        conferePosicoesRanking(nome, movimentos, nomeRanking, movimentosRanking);
+        ofstream arquivo;
+        arquivo.open("ranking.txt");
+        if (arquivo.is_open())
+        {
+            while(i < 3){
+                arquivo << nomeRanking[i] << " " << movimentosRanking[i] << endl;
+                i++;
+            }
+            arquivo.close();
+        }
+        else
+        {
+            cout << "O arquivo não pode ser aberto";
+        }
+    }
+
+
 void cor_texto(int fonte, int fundo = 0)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)(fonte | fundo << 4));
@@ -518,6 +581,7 @@ void functionMenu()
                     system("cls");
                     imprimeMapaPersonagem(m, x, y);
                     imprimeNumeroMovimentos(player.movimentos);
+                    escreveRanking(player.nome, player.movimentos);
                     cout << "Parabens, " << player.nome << " voce ganhou o joguinho... " << endl;
                     cout << "Pressione qualquer tecla pra voltar ao menu" << endl;
                     system("pause");
