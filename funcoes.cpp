@@ -25,7 +25,8 @@ using namespace std;
 struct Jogador
 {
     string nome;
-    int movimentos;
+    int passos;
+    char ultimoMovimento;
 
     void escolheNome()
     {
@@ -34,68 +35,91 @@ struct Jogador
     }
 };
 
-void conferePosicoesRanking(string nome, int movimentos, string nomeRanking[3], int movimentosRanking[3]){
+void registroMovimentos(char ultimoMovimento)
+{
 
-        for(int i = 0; i < 3; i++){
-            if (movimentosRanking[i] > movimentos){
-                if(i == 0 || i == 1){
-                    nomeRanking[i+1] = nomeRanking[i];
-                    movimentosRanking[i+1] = movimentosRanking[i];
-                    nomeRanking[i] = nome;
-                    movimentosRanking[i] = movimentos;
-                }else{
-                    nomeRanking[i] = nome;
-                    movimentosRanking[i] = movimentos;
-                }
-                break;
-            }
-            cout << "conferindo" << endl;
-        }
-    }
-
-void leRanking(string nomeRanking[3], int movimentosRanking[3]) // https://www.youtube.com/watch?v=EjJY7yA5SWw
+    ofstream arquivo;
+    arquivo.open("movimentos.txt", std::ios::app);
+    if (arquivo.is_open())
     {
-        int i = 0;
-        string linha;
-        ifstream arquivo;
-        arquivo.open("ranking.txt");
-        if (arquivo.is_open())
+        arquivo << ultimoMovimento << endl;
+
+        arquivo.close();
+        cout << "deveria funcionar no momento que eu apertasse uma tecla";
+    }
+    else
+    {
+        cout << "O arquivo não pode ser aberto";
+    }
+}
+
+void conferePosicoesRanking(string nome, int passos, string nomeRanking[3], int passosRanking[3])
+{
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (passosRanking[i] > passos)
         {
-            while (i < 3 && arquivo >> nomeRanking[i] >> movimentosRanking[i])  //https://stackoverflow.com/questions/5431941/why-is-while-feoffile-always-wrong
+            if (i == 0 || i == 1)
             {
-                i++;
+                nomeRanking[i + 1] = nomeRanking[i];
+                passosRanking[i + 1] = passosRanking[i];
+                nomeRanking[i] = nome;
+                passosRanking[i] = passos;
             }
-            arquivo.close();
+            else
+            {
+                nomeRanking[i] = nome;
+                passosRanking[i] = passos;
+            }
+            break;
         }
-        else
-        {
-            cout << "O arquivo não pode ser aberto";
-        }    
     }
+}
 
-void escreveRanking(string nome, int movimentos)
+void leRanking(string nomeRanking[3], int passosRanking[3]) // https://www.youtube.com/watch?v=EjJY7yA5SWw
+{
+    int i = 0;
+    string linha;
+    ifstream arquivo;
+    arquivo.open("ranking.txt");
+    if (arquivo.is_open())
     {
-        string nomeRanking[3];
-        int movimentosRanking[3];
-        int i = 0;
-        leRanking(nomeRanking , movimentosRanking);
-        conferePosicoesRanking(nome, movimentos, nomeRanking, movimentosRanking);
-        ofstream arquivo;
-        arquivo.open("ranking.txt");
-        if (arquivo.is_open())
+        while (i < 3 && arquivo >> nomeRanking[i] >> passosRanking[i]) // https://stackoverflow.com/questions/5431941/why-is-while-feoffile-always-wrong
         {
-            while(i < 3){
-                arquivo << nomeRanking[i] << " " << movimentosRanking[i] << endl;
-                i++;
-            }
-            arquivo.close();
+            i++;
         }
-        else
-        {
-            cout << "O arquivo não pode ser aberto";
-        }
+        arquivo.close();
     }
+    else
+    {
+        cout << "O arquivo não pode ser aberto";
+    }
+}
 
+void escreveRanking(string nome, int passos)
+{
+    string nomeRanking[3];
+    int passosRanking[3];
+    int i = 0;
+    leRanking(nomeRanking, passosRanking);
+    conferePosicoesRanking(nome, passos, nomeRanking, passosRanking);
+    ofstream arquivo;
+    arquivo.open("ranking.txt");
+    if (arquivo.is_open())
+    {
+        while (i < 3)
+        {
+            arquivo << nomeRanking[i] << " " << passosRanking[i] << endl;
+            i++;
+        }
+        arquivo.close();
+    }
+    else
+    {
+        cout << "O arquivo não pode ser aberto";
+    }
+}
 
 void cor_texto(int fonte, int fundo = 0)
 {
@@ -320,9 +344,9 @@ void menuEscolheMapa(int &x, int &y, char m[10][15], int &numeroCaixas)
     }
 }
 
-void imprimeNumeroMovimentos(int &movimentos)
+void imprimeNumeroPassos(int &passos)
 {
-    cout << "numero de movimentos " << movimentos << endl;
+    cout << "numero de passos " << passos << endl;
 }
 
 void imprimeMapaPersonagem(char m[10][15], int x, int y)
@@ -369,7 +393,7 @@ void imprimeMapaPersonagem(char m[10][15], int x, int y)
     } // fim for mapa
 }
 
-void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movimentos)
+void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &passos, char &ultimoMovimento)
 {
     int modificadorX, modificadorY;
     switch (tecla)
@@ -407,12 +431,32 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movi
         if (modificadorX != 0)
         {
             x += modificadorX;
-            movimentos++;
+            passos++;
+            if (modificadorX == 1)
+            {
+                ultimoMovimento = 's';
+                registroMovimentos(ultimoMovimento);
+            }
+            else
+            {
+                ultimoMovimento = 'w';
+                registroMovimentos(ultimoMovimento);
+            }
         }
         if (modificadorY != 0)
         {
             y += modificadorY;
-            movimentos++;
+            passos++;
+            if (modificadorY == 1)
+            {
+                ultimoMovimento = 'd';
+                registroMovimentos(ultimoMovimento);
+            }
+            else
+            {
+                ultimoMovimento = 'a';
+                registroMovimentos(ultimoMovimento);
+            }
         }
         break;
 
@@ -425,12 +469,32 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movi
             if (modificadorX != 0)
             {
                 x += modificadorX;
-                movimentos++;
+                passos++;
+                if (modificadorX == 1)
+                {
+                    ultimoMovimento = 's';
+                    registroMovimentos(ultimoMovimento);
+                }
+                else
+                {
+                    ultimoMovimento = 'w';
+                    registroMovimentos(ultimoMovimento);
+                }
             }
             if (modificadorY != 0)
             {
                 y += modificadorY;
-                movimentos++;
+                passos++;
+                if (modificadorY == 1)
+                {
+                    ultimoMovimento = 'd';
+                    registroMovimentos(ultimoMovimento);
+                }
+                else
+                {
+                    ultimoMovimento = 'a';
+                    registroMovimentos(ultimoMovimento);
+                }
             }
             break;
 
@@ -440,12 +504,32 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movi
             if (modificadorX != 0)
             {
                 x += modificadorX;
-                movimentos++;
+                passos++;
+                if (modificadorX == 1)
+                {
+                    ultimoMovimento = 's';
+                    registroMovimentos(ultimoMovimento);
+                }
+                else
+                {
+                    ultimoMovimento = 'w';
+                    registroMovimentos(ultimoMovimento);
+                }
             }
             if (modificadorY != 0)
             {
                 y += modificadorY;
-                movimentos++;
+                passos++;
+                if (modificadorY == 1)
+                {
+                    ultimoMovimento = 'd';
+                    registroMovimentos(ultimoMovimento);
+                }
+                else
+                {
+                    ultimoMovimento = 'a';
+                    registroMovimentos(ultimoMovimento);
+                }
             }
             break;
         }
@@ -455,12 +539,32 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movi
         if (modificadorX != 0)
         {
             x += modificadorX;
-            movimentos++;
+            passos++;
+            if (modificadorX == 1)
+            {
+                ultimoMovimento = 's';
+                registroMovimentos(ultimoMovimento);
+            }
+            else
+            {
+                ultimoMovimento = 'w';
+                registroMovimentos(ultimoMovimento);
+            }
         }
         if (modificadorY != 0)
         {
             y += modificadorY;
-            movimentos++;
+            passos++;
+            if (modificadorY == 1)
+            {
+                ultimoMovimento = 'd';
+                registroMovimentos(ultimoMovimento);
+            }
+            else
+            {
+                ultimoMovimento = 'a';
+                registroMovimentos(ultimoMovimento);
+            }
         }
         break;
 
@@ -473,12 +577,32 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movi
             if (modificadorX != 0)
             {
                 x += modificadorX;
-                movimentos++;
+                passos++;
+                if (modificadorX == 1)
+                {
+                    ultimoMovimento = 's';
+                    registroMovimentos(ultimoMovimento);
+                }
+                else
+                {
+                    ultimoMovimento = 'w';
+                    registroMovimentos(ultimoMovimento);
+                }
             }
             if (modificadorY != 0)
             {
                 y += modificadorY;
-                movimentos++;
+                passos++;
+                if (modificadorY == 1)
+                {
+                    ultimoMovimento = 'd';
+                    registroMovimentos(ultimoMovimento);
+                }
+                else
+                {
+                    ultimoMovimento = 'a';
+                    registroMovimentos(ultimoMovimento);
+                }
             }
             break;
 
@@ -488,12 +612,32 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movi
             if (modificadorX != 0)
             {
                 x += modificadorX;
-                movimentos++;
+                passos++;
+                if (modificadorX == 1)
+                {
+                    ultimoMovimento = 's';
+                    registroMovimentos(ultimoMovimento);
+                }
+                else
+                {
+                    ultimoMovimento = 'w';
+                    registroMovimentos(ultimoMovimento);
+                }
             }
             if (modificadorY != 0)
             {
                 y += modificadorY;
-                movimentos++;
+                passos++;
+                if (modificadorY == 1)
+                {
+                    ultimoMovimento = 'd';
+                    registroMovimentos(ultimoMovimento);
+                }
+                else
+                {
+                    ultimoMovimento = 'a';
+                    registroMovimentos(ultimoMovimento);
+                }
             }
             break;
         }
@@ -501,12 +645,12 @@ void movimento(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movi
     }
 }
 
-void executaMovimentos(char tecla, char m[10][15], int &x, int &y, bool &sair, int &movimentos)
+void executaMovimentos(char tecla, char m[10][15], int &x, int &y, bool &sair, int &passos, char &ultimoMovimento)
 {
     if (_kbhit())
     {
         tecla = getch();
-        movimento(tecla, m, x, y, sair, movimentos);
+        movimento(tecla, m, x, y, sair, passos, ultimoMovimento);
     } // fim do if
 }
 
@@ -520,6 +664,8 @@ void functionMenu()
     int y = 4;
 
     char tecla;
+
+    player.ultimoMovimento = 'c';
 
     do
     {
@@ -544,27 +690,24 @@ void functionMenu()
                 cin >> jogar;
             }
 
-            
-
             if (jogar == 1)
             {
                 naoPisca();
                 sair = false;
                 ganhou = false;
                 player.escolheNome(); // chamada de metodo struct
-                player.movimentos = 0;
+                player.passos = 0;
                 menuEscolheMapa(x, y, m, numeroCaixas);
                 system("cls");
             }
             else
-            {   
+            {
                 naoPisca();
                 system("cls");
                 sair = false;
                 ganhou = false;
                 jogar = 1;
             }
-            
 
             while (!sair && !ganhou)
             {
@@ -572,16 +715,16 @@ void functionMenu()
                 reposicionaCursor();
                 cout << "para sair presione [L]" << endl;
                 imprimeMapaPersonagem(m, x, y);
-                imprimeNumeroMovimentos(player.movimentos);
-                executaMovimentos(tecla, m, x, y, sair, player.movimentos);
+                imprimeNumeroPassos(player.passos);
+                executaMovimentos(tecla, m, x, y, sair, player.passos, player.ultimoMovimento);
                 ganhou = retornaGanhou(numeroCaixas, m);
                 if (ganhou == true)
                 {
-                    
+
                     system("cls");
                     imprimeMapaPersonagem(m, x, y);
-                    imprimeNumeroMovimentos(player.movimentos);
-                    escreveRanking(player.nome, player.movimentos);
+                    imprimeNumeroPassos(player.passos);
+                    escreveRanking(player.nome, player.passos);
                     cout << "Parabens, " << player.nome << " voce ganhou o joguinho... " << endl;
                     cout << "Pressione qualquer tecla pra voltar ao menu" << endl;
                     system("pause");
